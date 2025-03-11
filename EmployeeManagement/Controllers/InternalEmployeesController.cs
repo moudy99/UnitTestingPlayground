@@ -11,12 +11,14 @@ namespace EmployeeManagement.Controllers
     public class InternalEmployeesController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
+        private readonly HttpClient httpClient;
         private readonly IMapper _mapper;
 
-        public InternalEmployeesController(IEmployeeService employeeService, 
+        public InternalEmployeesController(IEmployeeService employeeService, HttpClient httpClient,
             IMapper mapper)
         {
             _employeeService = employeeService;
+            this.httpClient = httpClient;
             _mapper = mapper;
         }
 

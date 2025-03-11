@@ -119,5 +119,88 @@ A quick reference for tools and learning materials to level up your unit testing
 
 ---
 
-**Note**: This is a living document! Feel free to add new sections as you dive deeper into unit testing.
+## Caveats
 
+This section highlights common pitfalls and tricky scenarios in unit testing, along with how to handle them effectively.
+
+### Testing Asynchronous Methods
+
+- **Rule**: Use `async Task` for test methods that test asynchronous code, and await the SUT’s async methods.
+- **Example**:
+  
+  ```csharp
+  [Test]
+  public async Task CreateEmployeeAsync_WithValidData_CreatesEmployeeSuccessfully()
+  {
+      // Arrange
+      var sut = new EmployeeFactory();
+      var firstName = "John";
+      var lastName = "Doe";
+
+      // Act
+      var employee = await sut.CreateEmployeeAsync(firstName, lastName);
+
+      // Assert
+      Assert.That(employee, Is.Not.Null);
+      Assert.That(employee.Salary, Is.EqualTo(2500));
+  }
+  ```
+  
+- **Why**: Async methods return a Task, and you need to await them to get the result or catch exceptions properly.
+- **Best Practice**:
+  - Always return Task (not void) for async tests to ensure the test framework (e.g., NUnit) waits for completion.
+  - Use `Assert.ThrowsAsync` (or equivalent) to test exceptions in async code.
+  - Consider using `Task.CompletedTask` for methods that don’t return meaningful data.
+  - Avoid `ConfigureAwait(false)` in unit tests—it’s mainly useful for library code.
+  - Implement timeouts (`Task.Delay` or `CancellationTokenSource`) to prevent hanging tests.
+
+### Handling Exceptions
+
+- **Rule**: Use assertion methods like `Assert.Throws` or `Assert.ThrowsAsync` to verify that the SUT throws expected exceptions.
+- **Example (Synchronous)**:
+  
+  ```csharp
+  [Test]
+  public void CreateEmployee_WithEmptyName_ThrowsArgumentException()
+  {
+      // Arrange
+      var sut = new EmployeeFactory();
+
+      // Act & Assert
+      var exception = Assert.Throws<ArgumentException>(() => sut.CreateEmployee("", "Doe"));
+      Assert.That(exception.Message, Contains.Substring("Name cannot be empty"));
+  }
+  ```
+  
+- **Example (Asynchronous)**:
+  
+  ```csharp
+  [Test]
+  public async Task CreateEmployeeAsync_WithEmptyName_ThrowsArgumentException()
+  {
+      // Arrange
+      var sut = new EmployeeFactory();
+
+      // Act & Assert
+      var exception = await Assert.ThrowsAsync<ArgumentException>(
+          async () => await sut.CreateEmployeeAsync("", "Doe"));
+      Assert.That(exception.Message, Contains.Substring("Name cannot be empty"));
+  }
+  ```
+  
+- **Why**: Exceptions are a key part of behavior testing—sometimes you want your code to fail in specific ways.
+- **Best Practice**:
+  - Be specific with exception types (e.g., `ArgumentException` instead of just `Exception`) to avoid masking unexpected errors.
+  - Test the exception message or properties if they’re part of the expected behavior to make tests more robust.
+  - Use `Assert.Catch<T>()` when you expect multiple exception types but still want to verify the thrown exception.
+  - For custom exceptions, ensure they include meaningful messages and properties to validate in tests.
+  - Implement a global test exception handler to catch unexpected failures and log debugging details.
+
+### General Unit Testing Best Practices
+
+- **Ensure tests are deterministic**: Each test should run independently without dependencies on external factors like databases or APIs.
+- **Use dependency injection & mocking**: Tools like Moq help isolate components, ensuring unit tests focus only on the system under test.
+- **Follow the Arrange-Act-Assert (AAA) pattern**: This improves readability and maintainability.
+- **Keep tests fast**: Slow tests can bottleneck CI/CD pipelines. Use lightweight data and avoid unnecessary delays.
+- **Run tests in parallel where possible**: Many test frameworks support parallel execution to speed up testing.
+- **Use meaningful test names**: A good test name should describe the expected behavior (e.g., `CreateEmployee_WithEmptyName_ThrowsArgumentException`).
