@@ -195,12 +195,4 @@ This section highlights common pitfalls and tricky scenarios in unit testing, al
   - Use `Assert.Catch<T>()` when you expect multiple exception types but still want to verify the thrown exception.
   - For custom exceptions, ensure they include meaningful messages and properties to validate in tests.
   - Implement a global test exception handler to catch unexpected failures and log debugging details.
-
-### General Unit Testing Best Practices
-
-- **Ensure tests are deterministic**: Each test should run independently without dependencies on external factors like databases or APIs.
-- **Use dependency injection & mocking**: Tools like Moq help isolate components, ensuring unit tests focus only on the system under test.
-- **Follow the Arrange-Act-Assert (AAA) pattern**: This improves readability and maintainability.
-- **Keep tests fast**: Slow tests can bottleneck CI/CD pipelines. Use lightweight data and avoid unnecessary delays.
-- **Run tests in parallel where possible**: Many test frameworks support parallel execution to speed up testing.
-- **Use meaningful test names**: A good test name should describe the expected behavior (e.g., `CreateEmployee_WithEmptyName_ThrowsArgumentException`).
+ 
