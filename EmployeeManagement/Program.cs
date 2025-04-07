@@ -8,6 +8,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -19,7 +20,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.RegisterBusinessServices();
 builder.Services.RegisterDataServices(builder.Configuration);
-
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();

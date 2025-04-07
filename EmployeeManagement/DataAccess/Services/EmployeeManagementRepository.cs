@@ -1,23 +1,37 @@
 ﻿using EmployeeManagement.DataAccess.DbContexts;
 using EmployeeManagement.DataAccess.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace EmployeeManagement.DataAccess.Services
 {
     public class EmployeeManagementRepository : IEmployeeManagementRepository
     {
         private readonly EmployeeDbContext _context;
+        private readonly IMemoryCache memoryCache;
 
-        public EmployeeManagementRepository(EmployeeDbContext context)
+        public EmployeeManagementRepository(EmployeeDbContext context , IMemoryCache memoryCache)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            this.memoryCache = memoryCache;
         }
 
         public async Task<IEnumerable<InternalEmployee>> GetInternalEmployeesAsync()
         {
-            return await _context.InternalEmployees
+            if(memoryCache.TryGetValue("InternalEmployees", out IEnumerable<InternalEmployee> internalEmployees))
+            {
+                return internalEmployees;
+            }
+            else
+            {
+
+            var result = await _context.InternalEmployees
                 .Include(e => e.AttendedCourses)
-                .ToListAsync(); 
+                .ToListAsync();
+                memoryCache.Set("InternalEmployees", result);
+                return result;
+            }
         }
 
         public async Task<InternalEmployee?> GetInternalEmployeeAsync(Guid employeeId)

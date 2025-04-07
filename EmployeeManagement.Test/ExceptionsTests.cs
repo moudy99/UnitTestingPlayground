@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeManagement.Business;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -15,5 +16,17 @@ namespace EmployeeManagement.Test
            await Assert.ThrowsAnyAsync<Exception>(() => throw new InvalidEnumArgumentException("Invalid"));
         }
 
+        [Fact]
+        public  void CreateInternalEmployee_TryToCreateInternalEmployeeWihtoutFirstName_ThrowAnException()
+        {
+            var sut = new EmployeeFactory();
+
+            Assert.ThrowsAny<Exception>(() =>
+             {
+                 sut.CreateEmployee("", "Doe");
+             });
+
+
+        }
     }
 }

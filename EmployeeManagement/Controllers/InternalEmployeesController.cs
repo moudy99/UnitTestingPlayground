@@ -65,6 +65,8 @@ namespace EmployeeManagement.Controllers
         [HttpGet("{employeeId}", Name = "GetInternalEmployee")]
         public async Task<ActionResult<InternalEmployeeDto>> GetInternalEmployee(Guid? employeeId)
         {
+            _logger.LogInformation("GetInternalEmployee request received with employeeId: {EmployeeId}", employeeId);
+            _logger.LogError("+++++++++++==============================================");
             if (!employeeId.HasValue)
             {
                 _logger.LogWarning("GetInternalEmployee request received without employeeId");

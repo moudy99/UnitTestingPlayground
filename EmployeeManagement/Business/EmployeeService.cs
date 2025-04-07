@@ -1,7 +1,8 @@
 ﻿using EmployeeManagement.Business.EventArguments;
 using EmployeeManagement.Business.Exceptions;
 using EmployeeManagement.DataAccess.Entities;
-using EmployeeManagement.DataAccess.Services; 
+using EmployeeManagement.DataAccess.Services;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace EmployeeManagement.Business
 {
@@ -14,14 +15,16 @@ namespace EmployeeManagement.Business
 
         private readonly IEmployeeManagementRepository _repository;
         private readonly EmployeeFactory _employeeFactory;
+        private readonly IMemoryCache memoryCache;
 
         public event EventHandler<EmployeeIsAbsentEventArgs>? EmployeeIsAbsent;
 
         public EmployeeService(IEmployeeManagementRepository repository,
-            EmployeeFactory employeeFactory)
+            EmployeeFactory employeeFactory, IMemoryCache memoryCache)
         {
             _repository = repository;
             _employeeFactory = employeeFactory;
+            this.memoryCache = memoryCache;
         }
 
         public async Task AttendCourseAsync(InternalEmployee employee,
@@ -108,6 +111,8 @@ namespace EmployeeManagement.Business
                 // calculate fields
                 employee.SuggestedBonus = CalculateSuggestedBonus(employee);
             }
+
+         
 
             return employees;
         }
