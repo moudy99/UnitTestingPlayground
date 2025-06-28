@@ -15,16 +15,16 @@ namespace EmployeeManagement.Business
 
         private readonly IEmployeeManagementRepository _repository;
         private readonly EmployeeFactory _employeeFactory;
-        private readonly IMemoryCache memoryCache;
+        //private readonly IMemoryCache memoryCache;
 
         public event EventHandler<EmployeeIsAbsentEventArgs>? EmployeeIsAbsent;
 
         public EmployeeService(IEmployeeManagementRepository repository,
-            EmployeeFactory employeeFactory, IMemoryCache memoryCache)
+            EmployeeFactory employeeFactory)
         {
             _repository = repository;
             _employeeFactory = employeeFactory;
-            this.memoryCache = memoryCache;
+            //this.memoryCache = memoryCache;
         }
 
         public async Task AttendCourseAsync(InternalEmployee employee,
@@ -154,8 +154,7 @@ namespace EmployeeManagement.Business
             return employee;
         }
 
-        public async Task<InternalEmployee> CreateInternalEmployeeAsync(
-           string firstName, string lastName)
+        public async Task<InternalEmployee> CreateInternalEmployeeAsync(string firstName, string lastName)
         {
             // use the factory to create the object 
             var employee = (InternalEmployee)_employeeFactory.CreateEmployee(firstName, lastName);
@@ -220,6 +219,13 @@ namespace EmployeeManagement.Business
                 return employee.YearsInService
                     * employee.AttendedCourses.Count * 100;
             }
+        }
+
+        public async Task<bool> DeleteInternalEmployeeAsync(Guid employeeId)
+        {
+            var result = _repository.DeleteInternelEmployee(employeeId);
+            await _repository.SaveChangesAsync();
+            return result;
         }
     }
 }

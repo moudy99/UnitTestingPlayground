@@ -7,7 +7,7 @@ namespace EmployeeManagement.DataAccess.Services
         Task<IEnumerable<InternalEmployee>> GetInternalEmployeesAsync();
 
         InternalEmployee? GetInternalEmployee(Guid employeeId);
-
+        bool DeleteInternelEmployee(Guid employeeId);
         Task<InternalEmployee?> GetInternalEmployeeAsync(Guid employeeId);
 
         Task<Course?> GetCourseAsync(Guid courseId);
