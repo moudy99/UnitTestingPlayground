@@ -14,6 +14,8 @@ namespace EmployeeManagement.Business
             string lastName);
         Task<InternalEmployee> CreateInternalEmployeeAsync(string firstName, 
             string lastName);
+
+        Task<bool> DeleteInternalEmployeeAsync(Guid employeeId);
         InternalEmployee? FetchInternalEmployee(Guid employeeId);
         Task<InternalEmployee?> FetchInternalEmployeeAsync(Guid employeeId);
         Task<IEnumerable<InternalEmployee>> FetchInternalEmployeesAsync();
