@@ -95,5 +95,12 @@ namespace EmployeeManagement.DataAccess.Services
         {
             await _context.SaveChangesAsync();
         }
+
+        public bool DeleteInternelEmployee(Guid employeeId)
+        {
+            var result =  _context.InternalEmployees.Where(e => e.Id == employeeId).ExecuteDelete();
+            if (result == 1) return true;
+            return false;
+        }
     }
 }

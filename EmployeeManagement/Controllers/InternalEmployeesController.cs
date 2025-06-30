@@ -110,5 +110,23 @@ namespace EmployeeManagement.Controllers
                 return StatusCode(500, "An error occurred while creating the employee.");
             }
         }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteInternalEmployee(Guid employeeId)
+        {
+            _logger.LogInformation("Delete Employee with Id: {id}", employeeId);
+
+            try
+            {
+                var isEmployeeDeleted = await _employeeService.DeleteInternalEmployeeAsync(employeeId);
+                    return Ok();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Error while deletign user with id {id}", employeeId);
+                return StatusCode(500, "An error occured while deleteing the employee");
+            }
+        }
+    
     }
 }

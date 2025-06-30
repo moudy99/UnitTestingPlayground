@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Business;
 using EmployeeManagement.DataAccess.Entities;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,15 @@ namespace EmployeeManagement.Test
 {
     public class EmployeeFactoryTests
     {
+        private EmployeeFactory _sub;
         [Fact]
         public void CreateEmployee_WithOnlyFirstnameAndLastname_ReturnsInternalEmployeeWith2500Salay()
         {
             // Arrange
-            var SUT = new EmployeeFactory();
+             _sub= new EmployeeFactory();
 
             // Act
-            var employee = (InternalEmployee)SUT.CreateEmployee("Moudy", "Rasmy");
+            var employee = (InternalEmployee)_sub.CreateEmployee("Moudy", "Rasmy");
             
             // Assert
 
